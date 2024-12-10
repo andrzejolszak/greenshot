@@ -103,8 +103,8 @@ namespace Greenshot.Base.Core
         public bool PlayCameraSound { get; set; } = false;
 
         [IniProperty("ShowTrayNotification", LanguageKey = "settings_shownotify", Description = "Show a notification from the systray when a capture is taken.",
-            DefaultValue = "true")]
-        public bool ShowTrayNotification { get; set; } = true;
+            DefaultValue = "false")]
+        public bool ShowTrayNotification { get; set; } = false;
 
         [IniProperty("OutputFilePath", Description = "Output file path.")]
         public string OutputFilePath { get; set; }
@@ -275,10 +275,10 @@ namespace Greenshot.Base.Core
         [IniProperty("LeftClickAction",
             Description =
                 "Specify what action is made if the tray icon is left clicked, if a double-click action is specified this action is initiated after a delay (configurable via the windows double-click speed)",
-            DefaultValue = "SHOW_CONTEXT_MENU")]
+            DefaultValue = "CAPTURE_REGION")]
         public ClickActions LeftClickAction { get; set; }
 
-        [IniProperty("DoubleClickAction", Description = "Specify what action is made if the tray icon is double clicked", DefaultValue = "OPEN_LAST_IN_EXPLORER")]
+        [IniProperty("DoubleClickAction", Description = "Specify what action is made if the tray icon is double clicked", DefaultValue = "DO_NOTHING")]
         public ClickActions DoubleClickAction { get; set; }
 
         [IniProperty("ZoomerEnabled", Description = "Sets if the zoomer is enabled", DefaultValue = "True")]

@@ -19,7 +19,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.ComponentModel;
 using Greenshot.Base.Controls;
+using Greenshot.Base.Core;
+using Greenshot.Base.IniFile;
 using Greenshot.Editor.Controls;
 using Greenshot.Editor.Drawing;
 
@@ -51,11 +54,10 @@ namespace Greenshot.Editor.Forms {
 		/// not be able to load this method if it was changed manually.
 		/// </summary>
 		private void InitializeComponent() {
-			this.components = new System.ComponentModel.Container();
+            resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageEditorForm));
+            coreConfiguration = IniConfig.GetIniSection<CoreConfiguration>();
+            this.components = new System.ComponentModel.Container();
 			this.topToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-			this.dimensionsLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new NonJumpingPanel();
 			this.toolsToolStrip = new ToolStripEx();
@@ -214,15 +216,12 @@ namespace Greenshot.Editor.Forms {
 			this.zoom300MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoom400MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoom600MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.zoomStatusDropDownBtn = new System.Windows.Forms.ToolStripDropDownButton();
 			this.zoomMainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.statusStripSpacer = new System.Windows.Forms.ToolStripStatusLabel();
 			this.topToolStripContainer.BottomToolStripPanel.SuspendLayout();
 			this.topToolStripContainer.ContentPanel.SuspendLayout();
 			this.topToolStripContainer.LeftToolStripPanel.SuspendLayout();
 			this.topToolStripContainer.TopToolStripPanel.SuspendLayout();
 			this.topToolStripContainer.SuspendLayout();
-			this.statusStrip1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.toolsToolStrip.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -239,7 +238,6 @@ namespace Greenshot.Editor.Forms {
 			// 
 			// topToolStripContainer.BottomToolStripPanel
 			// 
-			this.topToolStripContainer.BottomToolStripPanel.Controls.Add(this.statusStrip1);
 			// 
 			// topToolStripContainer.ContentPanel
 			// 
@@ -256,40 +254,6 @@ namespace Greenshot.Editor.Forms {
 			this.topToolStripContainer.TopToolStripPanel.Join(this.menuStrip1,0);
 			this.topToolStripContainer.TopToolStripPanel.Join(this.destinationsToolStrip, 1);
 			this.topToolStripContainer.TopToolStripPanel.Join(this.propertiesToolStrip, 2);
-			// 
-			// statusStrip1
-			// 
-			this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.dimensionsLabel,
-									this.statusLabel,
-									this.statusStripSpacer,
-									this.zoomStatusDropDownBtn});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 0);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(785, 24);
-			this.statusStrip1.TabIndex = 3;
-			this.statusStrip1.Text = "statusStrip1";
-			// 
-			// dimensionsLabel
-			// 
-			this.dimensionsLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
-									| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
-									| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.dimensionsLabel.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
-			this.dimensionsLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.dimensionsLabel.Name = "dimensionsLabel";
-			this.dimensionsLabel.Text = "123x321";
-			// 
-			// statusLabel
-			// 
-			this.statusLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
-									| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
-									| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.statusLabel.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
-			this.statusLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.statusLabel.Name = "statusLabel";
-			this.statusLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.StatusLabelClicked);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -1833,21 +1797,6 @@ namespace Greenshot.Editor.Forms {
 			this.zoom600MenuItem.Text = "600%";
 			this.zoom600MenuItem.Click += new System.EventHandler(this.ZoomSetValueMenuItemClick);
 			// 
-			// statusStripSpacer
-			// 
-			this.statusStripSpacer.Name = "statusStripSpacer";
-			this.statusStripSpacer.Size = new System.Drawing.Size(599, 19);
-			this.statusStripSpacer.Spring = true;
-			// 
-			// zoomStatusDropDownBtn
-			// 
-			this.zoomStatusDropDownBtn.DropDown = this.zoomMenuStrip;
-			this.zoomStatusDropDownBtn.Image = ((System.Drawing.Image)(resources.GetObject("zoomStatusDropDownBtn.Image")));
-			this.zoomStatusDropDownBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.zoomStatusDropDownBtn.Name = "zoomStatusDropDownBtn";
-			this.zoomStatusDropDownBtn.Size = new System.Drawing.Size(64, 22);
-			this.zoomStatusDropDownBtn.Text = "100%";
-			// 
 			// ImageEditorForm
 			// 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1855,9 +1804,8 @@ namespace Greenshot.Editor.Forms {
 			this.ClientSize = new System.Drawing.Size(785, 485);
 			this.Controls.Add(this.topToolStripContainer);
 			this.KeyPreview = true;
-			this.LanguageKey = "editor_title";
-			this.Name = "ImageEditorForm";
-			this.Activated += new System.EventHandler(this.ImageEditorFormActivated);
+            this.ControlBox = false;
+            this.Activated += new System.EventHandler(this.ImageEditorFormActivated);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageEditorFormFormClosing);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ImageEditorFormKeyDown);
 			this.Resize += new System.EventHandler(this.ImageEditorFormResize);
@@ -1866,7 +1814,6 @@ namespace Greenshot.Editor.Forms {
 			this.topToolStripContainer.LeftToolStripPanel.ResumeLayout(true);
 			this.topToolStripContainer.TopToolStripPanel.ResumeLayout(true);
 			this.topToolStripContainer.ResumeLayout(true);
-			this.statusStrip1.ResumeLayout(true);
 			this.tableLayoutPanel1.ResumeLayout(true);
 			this.toolsToolStrip.ResumeLayout(true);
 			this.zoomMenuStrip.ResumeLayout(false);
@@ -1893,7 +1840,6 @@ namespace Greenshot.Editor.Forms {
 		private GreenshotToolStripMenuItem tornEdgesToolStripMenuItem;
 		private GreenshotToolStripMenuItem addDropshadowToolStripMenuItem;
 		private GreenshotToolStripDropDownButton toolStripSplitButton1;
-		private System.Windows.Forms.ToolStripStatusLabel dimensionsLabel;
 		private GreenshotToolStripMenuItem insert_window_toolstripmenuitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private GreenshotToolStripMenuItem grayscaleHighlightMenuItem;
@@ -2000,8 +1946,6 @@ namespace Greenshot.Editor.Forms {
 		private GreenshotToolStripMenuItem cutToolStripMenuItem;
 		private GreenshotToolStripMenuItem editToolStripMenuItem;
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-		private System.Windows.Forms.StatusStrip statusStrip1;
 		private GreenshotToolStripButton btnCut;
 		private GreenshotToolStripButton btnCopy;
 		private GreenshotToolStripButton btnPaste;
@@ -2038,8 +1982,6 @@ namespace Greenshot.Editor.Forms {
 		private System.Windows.Forms.ToolStripMenuItem zoom300MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zoom400MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zoom600MenuItem;
-		private System.Windows.Forms.ToolStripDropDownButton zoomStatusDropDownBtn;
 		private System.Windows.Forms.ToolStripMenuItem zoomMainMenuItem;
-		private System.Windows.Forms.ToolStripStatusLabel statusStripSpacer;
 	}
 }

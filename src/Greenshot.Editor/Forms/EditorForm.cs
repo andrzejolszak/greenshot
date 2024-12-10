@@ -25,5 +25,19 @@ namespace Greenshot.Editor.Forms
 {
     public class EditorForm : GreenshotForm
     {
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorForm));
+            this.SuspendLayout();
+            // 
+            // EditorForm
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ControlBox = false;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "EditorForm";
+            this.ResumeLayout(false);
+
+        }
     }
 }

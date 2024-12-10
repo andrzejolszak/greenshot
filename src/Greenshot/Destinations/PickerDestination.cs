@@ -63,6 +63,14 @@ namespace Greenshot.Destinations
                 }
 
                 destinations.Add(destination);
+
+                // Use the editor by default
+                if (destination.Designation == "Editor")
+                {
+                    ExportInformation exportInformation = new ExportInformation(Designation, Language.GetString("settings_destination_picker"));
+                    exportInformation = destination.ExportCapture(true, surface, captureDetails);
+                    return exportInformation;
+                }
             }
 
             // No Processing, this is done in the selected destination (if anything was selected)

@@ -68,7 +68,7 @@ namespace Greenshot.Editor.Configuration
         [IniProperty("FreehandSensitivity", Description = "The smaller this number, the less smoothing is used. Decrease for detailed drawing, e.g. when using a pen. Increase for smoother lines. e.g. when you want to draw a smooth line. Minimal value is 1, max is 2147483647.", DefaultValue = "3")]
         public int FreehandSensitivity { get; set; }
 
-        [IniProperty("SuppressSaveDialogAtClose", Description = "Suppressed the 'do you want to save' dialog when closing the editor.", DefaultValue = "False")]
+        [IniProperty("SuppressSaveDialogAtClose", Description = "Suppressed the 'do you want to save' dialog when closing the editor.", DefaultValue = "True")]
         public bool SuppressSaveDialogAtClose { get; set; }
 
         [IniProperty("DropShadowEffectSettings", Description = "Settings for the drop shadow effect.")]

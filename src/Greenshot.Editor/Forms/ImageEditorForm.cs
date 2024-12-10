@@ -140,6 +140,16 @@ namespace Greenshot.Editor.Forms
             Initialize(surface, outputMade);
         }
 
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
+
         private void Initialize(ISurface surface, bool outputMade)
         {
             EditorList.Add(this);
@@ -256,11 +266,6 @@ namespace Greenshot.Editor.Forms
 
                 BindFieldControls();
                 RefreshEditorControls();
-                // Fix title
-                if (_surface?.CaptureDetails?.Title != null)
-                {
-                    Text = _surface.CaptureDetails.Title + " - " + Language.GetString(LangKey.editor_title);
-                }
             }
 
             Activate();
@@ -499,8 +504,6 @@ namespace Greenshot.Editor.Forms
                     case SurfaceMessageTyp.FileSaved:
                         // Put the event message on the status label and attach the context menu
                         UpdateStatusLabel(dateTime + " - " + eventArgs.Message, fileSavedStatusContextMenu);
-                        // Change title
-                        Text = eventArgs.Surface.LastSaveFullPath + " - " + Language.GetString(LangKey.editor_title);
                         break;
                     default:
                         // Put the event message on the status label
@@ -562,7 +565,6 @@ namespace Greenshot.Editor.Forms
                 Size = GetOptimalWindowSize();
             }
 
-            dimensionsLabel.Text = Surface.Image.Width + "x" + Surface.Image.Height;
             AlignCanvasPositionAfterResize();
         }
 
@@ -588,7 +590,6 @@ namespace Greenshot.Editor.Forms
             }
 
             UpdateStatusLabel(Language.GetFormattedString(LangKey.editor_imagesaved, fullpath), fileSavedStatusContextMenu);
-            Text = Path.GetFileName(fullpath) + " - " + Language.GetString(LangKey.editor_title);
         }
 
         private void Surface_DrawingModeChanged(object source, SurfaceDrawingModeEventArgs eventArgs)
@@ -1230,8 +1231,6 @@ namespace Greenshot.Editor.Forms
 
         private void UpdateStatusLabel(string text, ContextMenuStrip contextMenu = null)
         {
-            statusLabel.Text = text;
-            statusStrip1.ContextMenuStrip = contextMenu;
         }
 
         private void StatusLabelClicked(object sender, MouseEventArgs e)
@@ -1592,7 +1591,6 @@ namespace Greenshot.Editor.Forms
                     _surface.DrawingMode = DrawingModes.Crop;
                     _surface.FieldAggregator.GetField(FieldType.CROPMODE).Value = CropContainer.CropModes.Default;
                     this.cropModeButton.SelectedTag = CropContainer.CropModes.Default;
-                    this.statusLabel.Text = Language.GetString(LangKey.editor_autocrop_not_possible);
                 }
             }
             else
@@ -1987,7 +1985,6 @@ namespace Greenshot.Editor.Forms
             AlignCanvasPositionAfterResize();
 
             // Update zoom controls
-            zoomStatusDropDownBtn.Text = ((int) (100 * (double) value)).ToString() + "%";
             var valueString = value.ToString();
             foreach (var item in zoomMenuStrip.Items)
             {
