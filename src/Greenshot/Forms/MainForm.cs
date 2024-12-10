@@ -32,17 +32,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using Dapplo.Windows.Common.Structs;
 using Dapplo.Windows.DesktopWindowsManager;
 using Dapplo.Windows.Dpi;
 using Dapplo.Windows.Kernel32;
-using Dapplo.Windows.User32;
 using Greenshot.Base;
 using Greenshot.Base.Controls;
 using Greenshot.Base.Core;
 using Greenshot.Base.Core.Enums;
 using Greenshot.Base.Core.FileFormatHandlers;
-using Greenshot.Base.Help;
 using Greenshot.Base.IniFile;
 using Greenshot.Base.Interfaces;
 using Greenshot.Base.Interfaces.Plugin;
@@ -303,12 +300,9 @@ namespace Greenshot.Forms
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                // if language is not set, show language dialog
                 if (string.IsNullOrEmpty(_conf.Language))
                 {
-                    LanguageDialog languageDialog = LanguageDialog.GetInstance();
-                    languageDialog.ShowDialog();
-                    _conf.Language = languageDialog.SelectedLanguage;
+                    _conf.Language = "en-US";
                     IniConfig.Save();
                 }
 
@@ -371,9 +365,6 @@ namespace Greenshot.Forms
 
         // Make sure we have only one settings form
         private SettingsForm _settingsForm;
-
-        // Make sure we have only one about form
-        private AboutForm _aboutForm;
 
         // Timer for the double click test
         private readonly Timer _doubleClickTimer = new Timer();
@@ -520,8 +511,6 @@ namespace Greenshot.Forms
                 new FileDestination(),
                 new FileWithDialogDestination(),
                 new ClipboardDestination(),
-                new PrinterDestination(),
-                new EmailDestination(),
                 new PickerDestination()
             };
             
@@ -748,11 +737,6 @@ namespace Greenshot.Forms
             }
 
             DpiChangedHandler(96, DeviceDpi);
-            string ieExePath = PluginUtils.GetExePath("iexplore.exe");
-            if (!string.IsNullOrEmpty(ieExePath))
-            {
-                contextmenu_captureie.Image = PluginUtils.GetCachedExeIcon(ieExePath, 0);
-            }
         }
 
         /// <summary>
@@ -796,29 +780,6 @@ namespace Greenshot.Forms
             if (!RegisterWrapper(failedKeys, "CaptureWindow", "WindowHotkey", _instance.CaptureWindow, ignoreFailedRegistration))
             {
                 success = false;
-            }
-
-            if (!RegisterWrapper(failedKeys, "CaptureFullScreen", "FullscreenHotkey", _instance.CaptureFullScreen, ignoreFailedRegistration))
-            {
-                success = false;
-            }
-
-            if (!RegisterWrapper(failedKeys, "CaptureLastRegion", "LastregionHotkey", _instance.CaptureLastRegion, ignoreFailedRegistration))
-            {
-                success = false;
-            }
-
-            if (!RegisterWrapper(failedKeys, "CaptureClipboard", "ClipboardHotkey", _instance.CaptureClipboard, true))
-            {
-                success = false;
-            }
-
-            if (_conf.IECapture)
-            {
-                if (!RegisterWrapper(failedKeys, "CaptureIE", "IEHotkey", _instance.CaptureIE, ignoreFailedRegistration))
-                {
-                    success = false;
-                }
             }
 
             if (!success)
@@ -906,15 +867,7 @@ namespace Greenshot.Forms
 
             // Show hotkeys in Contextmenu
             contextmenu_capturearea.ShortcutKeyDisplayString = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.RegionHotkey);
-            contextmenu_capturelastregion.ShortcutKeyDisplayString = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.LastregionHotkey);
             contextmenu_capturewindow.ShortcutKeyDisplayString = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.WindowHotkey);
-            contextmenu_capturefullscreen.ShortcutKeyDisplayString = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.FullscreenHotkey);
-            contextmenu_captureie.ShortcutKeyDisplayString = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.IEHotkey);
-            var clipboardHotkey = HotkeyControl.GetLocalizedHotkeyStringFromString(_conf.ClipboardHotkey);
-            if (!string.IsNullOrEmpty(clipboardHotkey) && !"None".Equals(clipboardHotkey))
-            {
-                contextmenu_captureclipboard.ShortcutKeyDisplayString = clipboardHotkey;
-            }
         }
 
 
@@ -929,11 +882,6 @@ namespace Greenshot.Forms
         {
             Hide();
             ShowInTaskbar = false;
-            
-            // TODO: Do we really need this?
-            //using var loProcess = Process.GetCurrentProcess();
-            //loProcess.MaxWorkingSet = (IntPtr)750000;
-            //loProcess.MinWorkingSet = (IntPtr)300000;
         }
 
         private void CaptureRegion()
@@ -961,32 +909,6 @@ namespace Greenshot.Forms
             }
         }
 
-        private void CaptureFullScreen()
-        {
-            CaptureHelper.CaptureFullscreen(true, _conf.ScreenCaptureMode);
-        }
-
-        private void CaptureLastRegion()
-        {
-            CaptureHelper.CaptureLastRegion(true);
-        }
-
-        /// <summary>
-        /// This is used by the hotkey trigger
-        /// </summary>
-        private void CaptureClipboard()
-        {
-            CaptureHelper.CaptureClipboard(DestinationHelper.GetDestination(EditorDestination.DESIGNATION));
-        }
-
-        private void CaptureIE()
-        {
-            if (_conf.IECapture)
-            {
-                CaptureHelper.CaptureIe(true, null);
-            }
-        }
-
         private void CaptureWindow()
         {
             if (_conf.CaptureWindowsInteractive)
@@ -1004,200 +926,9 @@ namespace Greenshot.Forms
         {
             var factor = DeviceDpi / 96f;
             contextMenu.Scale(new SizeF(factor, factor));
-            contextmenu_captureclipboard.Enabled = ClipboardHelper.ContainsImage();
-            contextmenu_capturelastregion.Enabled = coreConfiguration.LastCapturedRegion != NativeRect.Empty;
-
-            // IE context menu code
-            try
-            {
-                if (_conf.IECapture && IeCaptureHelper.IsIeRunning())
-                {
-                    contextmenu_captureie.Enabled = true;
-                    contextmenu_captureiefromlist.Enabled = true;
-                }
-                else
-                {
-                    contextmenu_captureie.Enabled = false;
-                    contextmenu_captureiefromlist.Enabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                LOG.WarnFormat("Problem accessing IE information: {0}", ex.Message);
-            }
-
-            // Multi-Screen captures
-            contextmenu_capturefullscreen.Click -= CaptureFullScreenToolStripMenuItemClick;
-            contextmenu_capturefullscreen.DropDownOpening -= MultiScreenDropDownOpening;
-            contextmenu_capturefullscreen.DropDownClosed -= MultiScreenDropDownClosing;
-            if (Screen.AllScreens.Length > 1)
-            {
-                contextmenu_capturefullscreen.DropDownOpening += MultiScreenDropDownOpening;
-                contextmenu_capturefullscreen.DropDownClosed += MultiScreenDropDownClosing;
-            }
-            else
-            {
-                contextmenu_capturefullscreen.Click += CaptureFullScreenToolStripMenuItemClick;
-            }
-
-            var now = DateTime.Now;
-            if ((now.Month == 12 && now.Day > 19 && now.Day < 27) || // christmas
-                (now.Month == 3 && now.Day > 13 && now.Day < 21))
-            {
-                // birthday
-                var resources = new ComponentResourceManager(typeof(MainForm));
-                contextmenu_donate.Image = (Image) resources.GetObject("contextmenu_present.Image");
-            }
         }
 
         private void ContextMenuClosing(object sender, EventArgs e)
-        {
-            contextmenu_captureiefromlist.DropDownItems.Clear();
-            contextmenu_capturewindowfromlist.DropDownItems.Clear();
-            CleanupThumbnail();
-        }
-
-        /// <summary>
-        /// Build a selectable list of IE tabs when we enter the menu item
-        /// </summary>
-        private void CaptureIeMenuDropDownOpening(object sender, EventArgs e)
-        {
-            if (!_conf.IECapture)
-            {
-                return;
-            }
-
-            try
-            {
-                List<KeyValuePair<WindowDetails, string>> tabs = IeCaptureHelper.GetBrowserTabs();
-                contextmenu_captureiefromlist.DropDownItems.Clear();
-                if (tabs.Count > 0)
-                {
-                    contextmenu_captureie.Enabled = true;
-                    contextmenu_captureiefromlist.Enabled = true;
-                    Dictionary<WindowDetails, int> counter = new Dictionary<WindowDetails, int>();
-
-                    foreach (KeyValuePair<WindowDetails, string> tabData in tabs)
-                    {
-                        string title = tabData.Value;
-                        if (title == null)
-                        {
-                            continue;
-                        }
-
-                        if (title.Length > _conf.MaxMenuItemLength)
-                        {
-                            title = title.Substring(0, Math.Min(title.Length, _conf.MaxMenuItemLength));
-                        }
-
-                        var captureIeTabItem = contextmenu_captureiefromlist.DropDownItems.Add(title);
-                        int index = counter.ContainsKey(tabData.Key) ? counter[tabData.Key] : 0;
-                        captureIeTabItem.Image = tabData.Key.DisplayIcon;
-                        captureIeTabItem.Tag = new KeyValuePair<WindowDetails, int>(tabData.Key, index++);
-                        captureIeTabItem.Click += Contextmenu_CaptureIeFromList_Click;
-                        contextmenu_captureiefromlist.DropDownItems.Add(captureIeTabItem);
-                        if (counter.ContainsKey(tabData.Key))
-                        {
-                            counter[tabData.Key] = index;
-                        }
-                        else
-                        {
-                            counter.Add(tabData.Key, index);
-                        }
-                    }
-                }
-                else
-                {
-                    contextmenu_captureie.Enabled = false;
-                    contextmenu_captureiefromlist.Enabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                LOG.WarnFormat("Problem accessing IE information: {0}", ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// MultiScreenDropDownOpening is called when mouse hovers over the Capture-Screen context menu
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MultiScreenDropDownOpening(object sender, EventArgs e)
-        {
-            ToolStripMenuItem captureScreenMenuItem = (ToolStripMenuItem) sender;
-            captureScreenMenuItem.DropDownItems.Clear();
-            if (DisplayInfo.AllDisplayInfos.Length <= 1) return;
-
-            var allScreensBounds = DisplayInfo.ScreenBounds;
-
-            var captureScreenItem = new ToolStripMenuItem(Language.GetString(LangKey.contextmenu_capturefullscreen_all));
-            captureScreenItem.Click += delegate {
-                BeginInvoke((MethodInvoker) delegate {
-                    CaptureHelper.CaptureFullscreen(false, ScreenCaptureMode.FullScreen);
-                });
-            };
-
-            captureScreenMenuItem.DropDownItems.Add(captureScreenItem);
-            foreach (var displayInfo in DisplayInfo.AllDisplayInfos)
-            {
-                var displayToCapture = displayInfo;
-                string deviceAlignment = displayToCapture.DeviceName;
-                    
-                if (displayInfo.Bounds.Top == allScreensBounds.Top && displayInfo.Bounds.Bottom != allScreensBounds.Bottom)
-                {
-                    deviceAlignment += " " + Language.GetString(LangKey.contextmenu_capturefullscreen_top);
-                }
-                else if (displayInfo.Bounds.Top != allScreensBounds.Top && displayInfo.Bounds.Bottom == allScreensBounds.Bottom)
-                {
-                    deviceAlignment += " " + Language.GetString(LangKey.contextmenu_capturefullscreen_bottom);
-                }
-
-                if (displayInfo.Bounds.Left == allScreensBounds.Left && displayInfo.Bounds.Right != allScreensBounds.Right)
-                {
-                    deviceAlignment += " " + Language.GetString(LangKey.contextmenu_capturefullscreen_left);
-                }
-                else if (displayInfo.Bounds.Left != allScreensBounds.Left && displayInfo.Bounds.Right == allScreensBounds.Right)
-                {
-                    deviceAlignment += " " + Language.GetString(LangKey.contextmenu_capturefullscreen_right);
-                }
-
-                captureScreenItem = new ToolStripMenuItem(deviceAlignment);
-                captureScreenItem.Click += delegate
-                {
-                    BeginInvoke((MethodInvoker) delegate
-                    {
-                        CaptureHelper.CaptureRegion(false, displayToCapture.Bounds);
-                    });
-                };
-                captureScreenMenuItem.DropDownItems.Add(captureScreenItem);
-            }
-        }
-
-        /// <summary>
-        /// MultiScreenDropDownOpening is called when mouse leaves the context menu
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MultiScreenDropDownClosing(object sender, EventArgs e)
-        {
-            ToolStripMenuItem captureScreenMenuItem = (ToolStripMenuItem) sender;
-            captureScreenMenuItem.DropDownItems.Clear();
-        }
-
-        /// <summary>
-        /// Build a selectable list of windows when we enter the menu item
-        /// </summary>
-        private void CaptureWindowFromListMenuDropDownOpening(object sender, EventArgs e)
-        {
-            // The Capture window context menu item used to go to the following code:
-            // captureForm.MakeCapture(CaptureMode.Window, false);
-            // Now we check which windows are there to capture
-            ToolStripMenuItem captureWindowFromListMenuItem = (ToolStripMenuItem) sender;
-            AddCaptureWindowMenuItems(captureWindowFromListMenuItem, Contextmenu_CaptureWindowFromList_Click);
-        }
-
-        private void CaptureWindowFromListMenuDropDownClosed(object sender, EventArgs e)
         {
             CleanupThumbnail();
         }
@@ -1277,24 +1008,9 @@ namespace Greenshot.Forms
             BeginInvoke((MethodInvoker) delegate { CaptureHelper.CaptureRegion(false); });
         }
 
-        private void CaptureClipboardToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            BeginInvoke((MethodInvoker) delegate { CaptureHelper.CaptureClipboard(); });
-        }
-
-        private void OpenFileToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            BeginInvoke((MethodInvoker) delegate { CaptureFile(); });
-        }
-
         private void CaptureFullScreenToolStripMenuItemClick(object sender, EventArgs e)
         {
             BeginInvoke((MethodInvoker) delegate { CaptureHelper.CaptureFullscreen(false, _conf.ScreenCaptureMode); });
-        }
-
-        private void Contextmenu_CaptureLastRegionClick(object sender, EventArgs e)
-        {
-            BeginInvoke((MethodInvoker) delegate { CaptureHelper.CaptureLastRegion(false); });
         }
 
         private void Contextmenu_CaptureWindow_Click(object sender, EventArgs e)
@@ -1317,59 +1033,6 @@ namespace Greenshot.Forms
                     LOG.Error(exception);
                 }
             });
-        }
-
-        private void Contextmenu_CaptureIe_Click(object sender, EventArgs e)
-        {
-            CaptureIE();
-        }
-
-        private void Contextmenu_CaptureIeFromList_Click(object sender, EventArgs e)
-        {
-            if (!_conf.IECapture)
-            {
-                LOG.InfoFormat("IE Capture is disabled.");
-                return;
-            }
-
-            ToolStripMenuItem clickedItem = (ToolStripMenuItem) sender;
-            KeyValuePair<WindowDetails, int> tabData = (KeyValuePair<WindowDetails, int>) clickedItem.Tag;
-            BeginInvoke((MethodInvoker) delegate
-            {
-                WindowDetails ieWindowToCapture = tabData.Key;
-                if (ieWindowToCapture != null && (!ieWindowToCapture.Visible || ieWindowToCapture.Iconic))
-                {
-                    ieWindowToCapture.Restore();
-                }
-
-                try
-                {
-                    IeCaptureHelper.ActivateIeTab(ieWindowToCapture, tabData.Value);
-                }
-                catch (Exception exception)
-                {
-                    LOG.Error(exception);
-                }
-
-                try
-                {
-                    CaptureHelper.CaptureIe(false, ieWindowToCapture);
-                }
-                catch (Exception exception)
-                {
-                    LOG.Error(exception);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Context menu entry "Support Greenshot"
-        /// </summary>
-        /// <param name="sender">object</param>
-        /// <param name="e">EventArgs</param>
-        private void Contextmenu_DonateClick(object sender, EventArgs e)
-        {
-            BeginInvoke((MethodInvoker) delegate { Process.Start("https://getgreenshot.org/support/?version=" + EnvironmentInfo.GetGreenshotVersion(true)); });
         }
 
         /// <summary>
@@ -1408,48 +1071,6 @@ namespace Greenshot.Forms
                     _settingsForm = null;
                 }
             }
-        }
-
-        /// <summary>
-        /// The "About Greenshot" entry is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Contextmenu_AboutClick(object sender, EventArgs e)
-        {
-            ShowAbout();
-        }
-
-        public void ShowAbout()
-        {
-            if (_aboutForm != null)
-            {
-                WindowDetails.ToForeground(_aboutForm.Handle);
-            }
-            else
-            {
-                try
-                {
-                    using (_aboutForm = new AboutForm())
-                    {
-                        _aboutForm.ShowDialog(this);
-                    }
-                }
-                finally
-                {
-                    _aboutForm = null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// The "Help" entry is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Contextmenu_HelpClick(object sender, EventArgs e)
-        {
-            HelpFileLoader.LoadHelp();
         }
 
         /// <summary>
@@ -1654,7 +1275,6 @@ namespace Greenshot.Forms
                 string exceptionText = EnvironmentInfo.BuildReport(exceptionToLog);
                 LOG.Error("Exception caught in the UnobservedTaskException handler.");
                 LOG.Error(exceptionText);
-                new BugReportForm(exceptionText).ShowDialog();
             }
             finally
             {
@@ -1673,8 +1293,6 @@ namespace Greenshot.Forms
                 // Ignore for BUG-1809
                 return;
             }
-
-            new BugReportForm(exceptionText).ShowDialog();
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
@@ -1688,8 +1306,6 @@ namespace Greenshot.Forms
                 // Ignore for BUG-1809
                 return;
             }
-
-            new BugReportForm(exceptionText).ShowDialog();
         }
 
         /// <summary>

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -103,6 +104,12 @@ namespace Greenshot.Base.IniFile
         /// </summary>
         public static void ForceIniInStartupPath()
         {
+            bool designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
+            if (designMode)
+            {
+                return;
+            }
+
             if (_portableCheckMade)
             {
                 throw new Exception("ForceLocal should be called before any file is read");

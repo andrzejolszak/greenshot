@@ -121,7 +121,6 @@ namespace Greenshot.Editor.Forms {
 			this.pluginToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.helpToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new GreenshotToolStripMenuItem();
-			this.aboutToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.destinationsToolStrip = new ToolStripEx();
 			this.btnSave = new GreenshotToolStripButton();
 			this.btnClipboard = new GreenshotToolStripButton();
@@ -852,8 +851,7 @@ namespace Greenshot.Editor.Forms {
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.helpToolStripMenuItem1,
-									this.aboutToolStripMenuItem});
+									this.helpToolStripMenuItem1});
 			this.helpToolStripMenuItem.LanguageKey = "contextmenu_help";
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Text = "Help";
@@ -865,12 +863,6 @@ namespace Greenshot.Editor.Forms {
 			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
 			this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.HelpToolStripMenuItem1Click);
-			// 
-			// aboutToolStripMenuItem
-			// 
-			this.aboutToolStripMenuItem.LanguageKey = "contextmenu_about";
-			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItemClick);
 			// 
 			// destinationsToolStrip
 			// 
@@ -1981,7 +1973,6 @@ namespace Greenshot.Editor.Forms {
 		private GreenshotToolStripButton btnSettings;
 		private GreenshotToolStripButton btnHelp;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
-		private GreenshotToolStripMenuItem aboutToolStripMenuItem;
 		private GreenshotToolStripMenuItem helpToolStripMenuItem1;
 		private GreenshotToolStripMenuItem helpToolStripMenuItem;
 		private GreenshotToolStripMenuItem preferencesToolStripMenuItem;

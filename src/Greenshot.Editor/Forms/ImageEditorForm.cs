@@ -900,12 +900,6 @@ namespace Greenshot.Editor.Forms
             HelpFileLoader.LoadHelp();
         }
 
-        private void AboutToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            var mainForm = SimpleServiceProvider.Current.GetInstance<IGreenshotMainForm>();
-            mainForm.ShowAbout();
-        }
-
         private void PreferencesToolStripMenuItemClick(object sender, EventArgs e)
         {
             var mainForm = SimpleServiceProvider.Current.GetInstance<IGreenshotMainForm>();
@@ -1371,7 +1365,6 @@ namespace Greenshot.Editor.Forms
                     ToolStripItemEndisabler.Disable(toolsToolStrip);
                     ToolStripItemEndisabler.Enable(closeToolStripMenuItem);
                     ToolStripItemEndisabler.Enable(helpToolStripMenuItem);
-                    ToolStripItemEndisabler.Enable(aboutToolStripMenuItem);
                     ToolStripItemEndisabler.Enable(preferencesToolStripMenuItem);
                     _controlsDisabledDueToConfirmable = true;
                 }

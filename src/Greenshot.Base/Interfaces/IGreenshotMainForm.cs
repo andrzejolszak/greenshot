@@ -37,10 +37,5 @@ namespace Greenshot.Base.Interfaces
         /// This is called indirectly from the context menu "Preferences"
         /// </summary>
         void ShowSetting();
-
-        /// <summary>
-        /// Show the about window
-        /// </summary>
-        void ShowAbout();
     }
 }
