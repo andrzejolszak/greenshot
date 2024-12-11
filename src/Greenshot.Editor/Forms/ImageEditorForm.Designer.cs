@@ -20,6 +20,7 @@
  */
 
 using System.ComponentModel;
+using System.Drawing;
 using Greenshot.Base.Controls;
 using Greenshot.Base.Core;
 using Greenshot.Base.IniFile;
@@ -57,8 +58,6 @@ namespace Greenshot.Editor.Forms {
             resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageEditorForm));
             coreConfiguration = IniConfig.GetIniSection<CoreConfiguration>();
             this.components = new System.ComponentModel.Container();
-			this.topToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel1 = new NonJumpingPanel();
 			this.toolsToolStrip = new ToolStripEx();
 			this.btnCursor = new GreenshotToolStripButton();
@@ -85,7 +84,6 @@ namespace Greenshot.Editor.Forms {
 			this.btnCrop = new GreenshotToolStripButton();
 			this.rotateCwToolstripButton = new GreenshotToolStripButton();
 			this.rotateCcwToolstripButton = new GreenshotToolStripButton();
-			this.menuStrip1 = new MenuStripEx();
 			this.fileStripMenuItem = new GreenshotToolStripMenuItem();
 			this.editToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,7 +121,6 @@ namespace Greenshot.Editor.Forms {
 			this.pluginToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.helpToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new GreenshotToolStripMenuItem();
-			this.destinationsToolStrip = new ToolStripEx();
 			this.btnSave = new GreenshotToolStripButton();
 			this.btnClipboard = new GreenshotToolStripButton();
 			this.btnPrint = new GreenshotToolStripButton();
@@ -217,75 +214,30 @@ namespace Greenshot.Editor.Forms {
 			this.zoom400MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoom600MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoomMainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.topToolStripContainer.BottomToolStripPanel.SuspendLayout();
-			this.topToolStripContainer.ContentPanel.SuspendLayout();
-			this.topToolStripContainer.LeftToolStripPanel.SuspendLayout();
-			this.topToolStripContainer.TopToolStripPanel.SuspendLayout();
-			this.topToolStripContainer.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.toolsToolStrip.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
 			this.zoomMenuStrip.SuspendLayout();
-			this.destinationsToolStrip.SuspendLayout();
 			this.propertiesToolStrip.SuspendLayout();
 			this.fileSavedStatusContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// topToolStripContainer
-			// 
-            this.topToolStripContainer.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.topToolStripContainer.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			// 
-			// topToolStripContainer.BottomToolStripPanel
-			// 
-			// 
-			// topToolStripContainer.ContentPanel
-			// 
-			this.topToolStripContainer.ContentPanel.AutoScroll = true;
-			this.topToolStripContainer.ContentPanel.Controls.Add(this.tableLayoutPanel1);
-			this.topToolStripContainer.ContentPanel.Size = new System.Drawing.Size(761, 385);
-			this.topToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.topToolStripContainer.LeftToolStripPanel.Join(this.toolsToolStrip,0);
-			this.topToolStripContainer.Location = new System.Drawing.Point(0, 0);
-			this.topToolStripContainer.Name = "toolStripContainer1";
-			this.topToolStripContainer.Size = new System.Drawing.Size(785, 485);
-			this.topToolStripContainer.TabIndex = 2;
-			this.topToolStripContainer.Text = "toolStripContainer1";
-			this.topToolStripContainer.TopToolStripPanel.Join(this.menuStrip1,0);
-			this.topToolStripContainer.TopToolStripPanel.Join(this.destinationsToolStrip, 1);
-			this.topToolStripContainer.TopToolStripPanel.Join(this.propertiesToolStrip, 2);
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.BackColor = System.Drawing.SystemColors.Control;
-			this.tableLayoutPanel1.ColumnCount = 1;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 385F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(761, 385);
-			this.tableLayoutPanel1.TabIndex = 3;
-			// 
 			// panel1
 			// 
-			this.panel1.AutoScroll = true;
+			this.panel1.AutoScroll = false;
 			this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(3, 3);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(755, 379);
+            this.panel1.AutoSize = true;
 			this.panel1.TabIndex = 2;
-			// 
-			// toolsToolStrip
-			// 
-			this.toolsToolStrip.ClickThrough = true;
+            this.panel1.BackColor = Color.Magenta;
+
+            // 
+            // toolsToolStrip
+            // 
+            this.toolsToolStrip.ClickThrough = true;
 			this.toolsToolStrip.ImageScalingSize = coreConfiguration.IconSize;
-			this.toolsToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolsToolStrip.Dock = System.Windows.Forms.DockStyle.Left;
 			this.toolsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolsToolStrip.Renderer = new CustomToolStripProfessionalRenderer();
 			this.toolsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -516,23 +468,6 @@ namespace Greenshot.Editor.Forms {
 			this.rotateCcwToolstripButton.LanguageKey = "editor_rotateccw";
 			this.rotateCcwToolstripButton.Name = "rotateCcwToolstripButton";
 			this.rotateCcwToolstripButton.Click += new System.EventHandler(this.RotateCcwToolstripButtonClick);
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.ImageScalingSize = coreConfiguration.IconSize;
-			this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.menuStrip1.Stretch = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.fileStripMenuItem,
-									this.editToolStripMenuItem,
-									this.objectToolStripMenuItem,
-									this.pluginToolStripMenuItem,
-									this.zoomMainMenuItem,
-									this.helpToolStripMenuItem});
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
-			this.menuStrip1.TabIndex = 1;
 			// 
 			// fileStripMenuItem
 			// 
@@ -827,36 +762,6 @@ namespace Greenshot.Editor.Forms {
 			this.helpToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
 			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.HelpToolStripMenuItem1Click);
 			// 
-			// destinationsToolStrip
-			// 
-			this.destinationsToolStrip.ClickThrough = true;
-			this.destinationsToolStrip.ImageScalingSize = coreConfiguration.IconSize;
-			this.destinationsToolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.destinationsToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.destinationsToolStrip.Name = "toolStrip1";
-			this.destinationsToolStrip.Stretch = true;
-			this.destinationsToolStrip.TabIndex = 0;
-			this.destinationsToolStrip.Renderer = new CustomToolStripProfessionalRenderer();
-			this.destinationsToolStrip.BackColor = System.Drawing.SystemColors.Control;
-			this.destinationsToolStrip.OverflowButton.DropDown.BackColor = System.Drawing.SystemColors.Control;
-			this.destinationsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.btnSave,
-									this.btnClipboard,
-									this.btnPrint,
-									this.toolStripSeparator2,
-									this.btnDelete,
-									this.toolStripSeparator3,
-									this.btnCut,
-									this.btnCopy,
-									this.btnPaste,
-									this.btnUndo,
-									this.btnRedo,
-									this.toolStripSeparator6,
-									this.btnSettings,
-									this.toolStripSeparator11,
-									this.toolStripSeparator16,
-									this.btnHelp});
-			// 
 			// btnSave
 			// 
 			this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -976,7 +881,7 @@ namespace Greenshot.Editor.Forms {
 			// 
 			this.propertiesToolStrip.ClickThrough = true;
 			this.propertiesToolStrip.ImageScalingSize = coreConfiguration.IconSize;
-			this.propertiesToolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertiesToolStrip.Dock = System.Windows.Forms.DockStyle.Top;
 			this.propertiesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.propertiesToolStrip.MinimumSize = new System.Drawing.Size(150, coreConfiguration.IconSize.Height + 10);
 			this.propertiesToolStrip.Name = "propertiesToolStrip";
@@ -1788,26 +1693,21 @@ namespace Greenshot.Editor.Forms {
 			// 
 			// ImageEditorForm
 			// 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(785, 485);
-			this.Controls.Add(this.topToolStripContainer);
-			this.KeyPreview = true;
+			this.Controls.Add(this.panel1);
+            this.Controls.Add(this.toolsToolStrip);
+            this.Controls.Add(this.propertiesToolStrip);
+            this.KeyPreview = true;
             this.ControlBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MinimumSize = new Size(1, 1);
             this.Activated += new System.EventHandler(this.ImageEditorFormActivated);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageEditorFormFormClosing);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ImageEditorFormKeyDown);
 			this.Resize += new System.EventHandler(this.ImageEditorFormResize);
-			this.topToolStripContainer.BottomToolStripPanel.ResumeLayout(true);
-			this.topToolStripContainer.ContentPanel.ResumeLayout(true);
-			this.topToolStripContainer.LeftToolStripPanel.ResumeLayout(true);
-			this.topToolStripContainer.TopToolStripPanel.ResumeLayout(true);
-			this.topToolStripContainer.ResumeLayout(true);
-			this.tableLayoutPanel1.ResumeLayout(true);
+			this.panel1.ResumeLayout(true);
 			this.toolsToolStrip.ResumeLayout(true);
 			this.zoomMenuStrip.ResumeLayout(false);
-			this.menuStrip1.ResumeLayout(true);
-			this.destinationsToolStrip.ResumeLayout(true);
 			this.propertiesToolStrip.ResumeLayout(true);
 			this.fileSavedStatusContextMenu.ResumeLayout(true);
 			this.ResumeLayout(false);
@@ -1934,7 +1834,6 @@ namespace Greenshot.Editor.Forms {
 		private GreenshotToolStripMenuItem copyToolStripMenuItem;
 		private GreenshotToolStripMenuItem cutToolStripMenuItem;
 		private GreenshotToolStripMenuItem editToolStripMenuItem;
-		private MenuStripEx menuStrip1;
 		private GreenshotToolStripButton btnCut;
 		private GreenshotToolStripButton btnCopy;
 		private GreenshotToolStripButton btnPaste;
@@ -1943,14 +1842,11 @@ namespace Greenshot.Editor.Forms {
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private GreenshotToolStripButton btnClipboard;
 		private GreenshotToolStripButton btnDelete;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private GreenshotToolStripButton btnEllipse;
 		private GreenshotToolStripButton btnSave;
 		private GreenshotToolStripButton btnRect;
-		private System.Windows.Forms.ToolStripContainer topToolStripContainer;
-		private ToolStripEx destinationsToolStrip;
 		private NonJumpingPanel panel1;
 		private ToolStripColorButton btnFillColor;
 		private ToolStripColorButton btnLineColor;

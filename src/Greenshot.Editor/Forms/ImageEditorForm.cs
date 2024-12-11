@@ -26,6 +26,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using Dapplo.Windows.Common.Extensions;
@@ -120,10 +121,7 @@ namespace Greenshot.Editor.Forms
         {
             var newSize = DpiCalculator.ScaleWithDpi(coreConfiguration.IconSize, newDpi);
             toolsToolStrip.ImageScalingSize = newSize;
-            menuStrip1.ImageScalingSize = newSize;
-            destinationsToolStrip.ImageScalingSize = newSize;
             propertiesToolStrip.ImageScalingSize = newSize;
-            propertiesToolStrip.MinimumSize = new Size(150, newSize.Height + 10);
             _surface?.AdjustToDpi(newDpi);
             UpdateUi();
         }
@@ -144,8 +142,17 @@ namespace Greenshot.Editor.Forms
         {
             if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
             {
-                this.Close();
-                return true;
+                if (_surface.DrawingMode == DrawingModes.None && !_surface.HasSelectedElements)
+                {
+                    this.Close();
+                    return true;
+                }
+                else
+                {
+                    _surface.DrawingMode = DrawingModes.None;
+                    RefreshFieldControls();
+                    return true;
+                }
             }
             return base.ProcessDialogKey(keyData);
         }
@@ -246,6 +253,14 @@ namespace Greenshot.Editor.Forms
             if (_surface != null)
             {
                 panel1.Controls.Add(_surface);
+                _surface.MouseDoubleClick += (s, e) =>
+                {
+                    if (e.Button == MouseButtons.Left && !_surface.HasSelectedElements && _surface.DrawingMode == DrawingModes.None)
+                    {
+                        this.Close();
+                        return;
+                    }
+                };
             }
 
             Image backgroundForTransparency = GreenshotResources.GetImage("Checkerboard.Image");
@@ -266,6 +281,9 @@ namespace Greenshot.Editor.Forms
 
                 BindFieldControls();
                 RefreshEditorControls();
+                this.ClientSize = _surface.ClientSize;
+                panel1.ClientSize = _surface.ClientSize;
+                this.PerformLayout();
             }
 
             Activate();
@@ -418,13 +436,10 @@ namespace Greenshot.Editor.Forms
                         }
                     }
                 };
-
-                destinationsToolStrip.Items.Insert(destinationsToolStrip.Items.IndexOf(toolStripSeparator16), destinationButton);
             }
             else
             {
                 ToolStripButton destinationButton = new ToolStripButton();
-                destinationsToolStrip.Items.Insert(destinationsToolStrip.Items.IndexOf(toolStripSeparator16), destinationButton);
                 destinationButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
                 destinationButton.Size = new Size(23, 22);
                 destinationButton.Text = toolstripDestination.Description;
@@ -1342,8 +1357,6 @@ namespace Greenshot.Editor.Forms
                 // disable most controls
                 if (!_controlsDisabledDueToConfirmable)
                 {
-                    ToolStripItemEndisabler.Disable(menuStrip1);
-                    ToolStripItemEndisabler.Disable(destinationsToolStrip);
                     ToolStripItemEndisabler.Disable(toolsToolStrip);
                     ToolStripItemEndisabler.Enable(closeToolStripMenuItem);
                     ToolStripItemEndisabler.Enable(helpToolStripMenuItem);
@@ -1354,8 +1367,6 @@ namespace Greenshot.Editor.Forms
             else if (_controlsDisabledDueToConfirmable)
             {
                 // re-enable disabled controls, confirmable element has either been confirmed or cancelled
-                ToolStripItemEndisabler.Enable(menuStrip1);
-                ToolStripItemEndisabler.Enable(destinationsToolStrip);
                 ToolStripItemEndisabler.Enable(toolsToolStrip);
                 _controlsDisabledDueToConfirmable = false;
             }
@@ -1807,25 +1818,8 @@ namespace Greenshot.Editor.Forms
                 return;
             }
 
-            int offsetX = -panel.HorizontalScroll.Value;
-            int offsetY = -panel.VerticalScroll.Value;
-            if (currentClientSize.Width > canvasSize.Width)
-            {
-                canvas.Left = offsetX + (currentClientSize.Width - canvasSize.Width) / 2;
-            }
-            else
-            {
-                canvas.Left = offsetX + 0;
-            }
-
-            if (currentClientSize.Height > canvasSize.Height)
-            {
-                canvas.Top = offsetY + (currentClientSize.Height - canvasSize.Height) / 2;
-            }
-            else
-            {
-                canvas.Top = offsetY + 0;
-            }
+            canvas.Width = canvasSize.Width;
+            canvas.Height = canvasSize.Height;
         }
 
         /// <summary>

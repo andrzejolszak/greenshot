@@ -277,16 +277,45 @@ namespace Greenshot.Editor.Drawing
             ShowTextBox();
         }
 
+        public class CustomTextBox : TextBox
+        {
+            public CustomTextBox()
+            {
+                SetStyle(ControlStyles.SupportsTransparentBackColor |
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.ResizeRedraw |
+                     ControlStyles.UserPaint, true);
+                BackColor = Color.Transparent;
+                TextChanged += UserControl2_OnTextChanged;
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                var backgroundBrush = new SolidBrush(Color.Transparent);
+                Graphics g = e.Graphics;
+                g.FillRectangle(backgroundBrush, 0, 0, this.Width, this.Height);
+                g.DrawString(Text, Font, new SolidBrush(ForeColor), new PointF(0, 0), StringFormat.GenericDefault);
+            }
+
+            public void UserControl2_OnTextChanged(object sender, EventArgs e)
+            {
+                Invalidate();
+            }
+        }
+
         private void CreateTextBox()
         {
-            _textBox = new TextBox
+            _textBox = new CustomTextBox
             {
                 ImeMode = ImeMode.On,
+                ForeColor = Color.Cyan,
                 Multiline = true,
                 AcceptsTab = true,
                 AcceptsReturn = true,
                 BorderStyle = BorderStyle.None,
                 Visible = false,
+                Margin = new Padding(0),
                 Font = new Font(FontFamily.GenericSansSerif, 1) // just need something non-default here
             };
 
@@ -303,32 +332,10 @@ namespace Greenshot.Editor.Drawing
                 InternalParent.Controls.Add(_textBox);
             }
 
-            EnsureTextBoxContrast();
             if (_textBox != null)
             {
                 _textBox.Show();
                 _textBox.Focus();
-            }
-        }
-
-        /// <summary>
-        /// Makes textbox background dark if text color is very bright
-        /// </summary>
-        private void EnsureTextBoxContrast()
-        {
-            if (_textBox == null)
-            {
-                return;
-            }
-
-            Color lc = GetFieldValueAsColor(FieldType.LINE_COLOR);
-            if (lc.R > 203 && lc.G > 203 && lc.B > 203)
-            {
-                _textBox.BackColor = Color.FromArgb(51, 51, 51);
-            }
-            else
-            {
-                _textBox.BackColor = Color.White;
             }
         }
 
@@ -532,19 +539,19 @@ namespace Greenshot.Editor.Drawing
                 return;
             }
 
-            var alignment = (StringAlignment) GetFieldValue(FieldType.TEXT_HORIZONTAL_ALIGNMENT);
-            switch (alignment)
-            {
-                case StringAlignment.Near:
-                    _textBox.TextAlign = HorizontalAlignment.Left;
-                    break;
-                case StringAlignment.Far:
-                    _textBox.TextAlign = HorizontalAlignment.Right;
-                    break;
-                case StringAlignment.Center:
-                    _textBox.TextAlign = HorizontalAlignment.Center;
-                    break;
-            }
+            // var alignment = (StringAlignment) GetFieldValue(FieldType.TEXT_HORIZONTAL_ALIGNMENT);
+            // switch (alignment)
+            // {
+            //     case StringAlignment.Near:
+            //         _textBox.TextAlign = HorizontalAlignment.Left;
+            //         break;
+            //     case StringAlignment.Far:
+            //         _textBox.TextAlign = HorizontalAlignment.Right;
+            //         break;
+            //     case StringAlignment.Center:
+            //         _textBox.TextAlign = HorizontalAlignment.Center;
+            //         break;
+            // }
 
             var lineColor = GetFieldValueAsColor(FieldType.LINE_COLOR);
             _textBox.ForeColor = lineColor;
@@ -608,7 +615,7 @@ namespace Greenshot.Editor.Drawing
                 DrawSelectionBorder(graphics, rect);
             }
 
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text) || this._textBox.Visible)
             {
                 return;
             }

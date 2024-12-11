@@ -52,6 +52,56 @@ namespace Greenshot.Editor.Drawing
     /// </summary>
     public sealed class Surface : Control, ISurface, INotifyPropertyChanged
     {
+        private Point _mouseDownLocation;
+        private Point _formLocation;
+        private bool _capture;
+
+        // NOTE: we cannot use the WM_NCHITTEST / HTCAPTION trick because the table is in control, not the owning form...
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (this.HasSelectedElements || this.DrawingMode != DrawingModes.None || e.Clicks > 1)
+            {
+                return;
+            }
+
+            _capture = true;
+            _mouseDownLocation = e.Location;
+            _formLocation = ((Form)TopLevelControl).Location;
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            _capture = false;
+
+            base.OnMouseUp(e);
+
+            if (this.HasSelectedElements || this.DrawingMode != DrawingModes.None || e.Clicks > 1)
+            {
+                return;
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            
+            if (this.HasSelectedElements || this.DrawingMode != DrawingModes.None || e.Clicks > 1)
+            {
+                return;
+            }
+
+            if (_capture)
+            {
+                int dx = e.Location.X - _mouseDownLocation.X;
+                int dy = e.Location.Y - _mouseDownLocation.Y;
+                Point newLocation = new Point(_formLocation.X + dx, _formLocation.Y + dy);
+                ((Form)TopLevelControl).Location = newLocation;
+                _formLocation = newLocation;
+            }
+        }
+
         private static readonly ILog LOG = LogManager.GetLogger(typeof(Surface));
         private static readonly CoreConfiguration conf = IniConfig.GetIniSection<CoreConfiguration>();
 
