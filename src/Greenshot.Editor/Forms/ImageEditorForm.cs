@@ -982,9 +982,6 @@ namespace Greenshot.Editor.Forms
             {
                 switch (e.KeyCode)
                 {
-                    case Keys.Escape:
-                        BtnCursorClick(sender, e);
-                        break;
                     case Keys.R:
                         BtnRectClick(sender, e);
                         break;
@@ -1029,6 +1026,14 @@ namespace Greenshot.Editor.Forms
                         break;
                     case Keys.Y:
                         RedoToolStripMenuItemClick(sender, e);
+                        break;
+                    case Keys.C:
+                        BtnCursorClick(sender, e);
+                        BtnClipboardClick(sender, e);
+                        break;
+                    case Keys.S:
+                        BtnCursorClick(sender, e);
+                        BtnSaveClick(sender, e);
                         break;
                     case Keys.Q: // Dropshadow Ctrl + Q
                         AddDropshadowToolStripMenuItemMouseUp(sender, new MouseEventArgs(MouseButtons.Left, 0, 0, 0, 0));
@@ -1130,28 +1135,6 @@ namespace Greenshot.Editor.Forms
             // disable default key handling if surface has requested a lock
             if (!_surface.KeysLocked)
             {
-                // Go through the destinations to check the EditorShortcut Keys
-                // this way the menu entries don't need to be enabled.
-                // This also fixes bugs #3526974 & #3527020
-                foreach (IDestination destination in DestinationHelper.GetAllDestinations())
-                {
-                    if (IgnoreDestinations.Contains(destination.Designation))
-                    {
-                        continue;
-                    }
-
-                    if (!destination.IsActive)
-                    {
-                        continue;
-                    }
-
-                    if (destination.EditorShortcutKeys == keys)
-                    {
-                        destination.ExportCapture(true, _surface, _surface.CaptureDetails);
-                        return true;
-                    }
-                }
-
                 if (!_surface.ProcessCmdKey(keys))
                 {
                     return base.ProcessCmdKey(ref msg, keys);

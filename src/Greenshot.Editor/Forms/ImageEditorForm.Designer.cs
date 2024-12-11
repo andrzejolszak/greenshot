@@ -602,7 +602,6 @@ namespace Greenshot.Editor.Forms {
 			this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
 			this.copyToolStripMenuItem.LanguageKey = "editor_copytoclipboard";
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItemClick);
 			// 
 			// pasteToolStripMenuItem
@@ -874,7 +873,7 @@ namespace Greenshot.Editor.Forms {
 			this.btnClipboard.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnClipboard.LanguageKey = "editor_copyimagetoclipboard";
 			this.btnClipboard.Name = "btnClipboard";
-			this.btnClipboard.Click += new System.EventHandler(this.BtnClipboardClick);
+            this.btnClipboard.Click += new System.EventHandler(this.BtnClipboardClick);
 			// 
 			// btnPrint
 			// 
@@ -913,16 +912,6 @@ namespace Greenshot.Editor.Forms {
 			this.btnCut.LanguageKey = "editor_cuttoclipboard";
 			this.btnCut.Name = "btnCut";
 			this.btnCut.Click += new System.EventHandler(this.BtnCutClick);
-			// 
-			// btnCopy
-			// 
-			this.btnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btnCopy.Enabled = false;
-			this.btnCopy.Image = ((System.Drawing.Image)(resources.GetObject("btnCopy.Image")));
-			this.btnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnCopy.LanguageKey = "editor_copytoclipboard";
-			this.btnCopy.Name = "btnCopy";
-			this.btnCopy.Click += new System.EventHandler(this.BtnCopyClick);
 			// 
 			// btnPaste
 			// 
