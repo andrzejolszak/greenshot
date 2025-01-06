@@ -58,7 +58,8 @@ namespace Greenshot.Forms
         private static readonly ILog Log = LogManager.GetLogger(typeof(CaptureForm));
         private static readonly CoreConfiguration Conf = IniConfig.GetIniSection<CoreConfiguration>();
         private static readonly Brush GreenOverlayBrush = new SolidBrush(Color.FromArgb(50, Color.MediumSeaGreen));
-        private static readonly Pen OverlayPen = new Pen(Color.FromArgb(50, Color.Black));
+        private static readonly Brush GrayOverlayBrush = new SolidBrush(Color.FromArgb(50, Color.DarkGray));
+        private static readonly Pen OverlayPen = new Pen(Color.FromArgb(50, Color.Magenta));
         private static CaptureForm _currentForm;
         private static readonly Brush BackgroundBrush;
 
@@ -642,8 +643,10 @@ namespace Greenshot.Forms
                     y1 -= measureHeight.Height + 10;
                 }
 
-                invalidateRectangle = new NativeRect(x1, y1, x2 - x1, y2 - y1);
-                Invalidate(invalidateRectangle);
+                // invalidateRectangle = new NativeRect(x1, y1, x2 - x1, y2 - y1);
+                
+                // Invalidate whole screen
+                Invalidate(_capture.ScreenBounds);
             }
             else if (_captureMode != CaptureMode.Window)
             {
@@ -889,9 +892,9 @@ namespace Greenshot.Forms
                 }
             }
 
-            int alpha = (int) (255 * Conf.ZoomerOpacity);
+            int alpha = (int) (160 * Conf.ZoomerOpacity);
             Color opacyWhite = Color.FromArgb(alpha, 255, 255, 255);
-            Color opacyBlack = Color.FromArgb(alpha, 0, 0, 0);
+            Color opacyBlack = Color.FromArgb(alpha, Color.Magenta);
 
             // Draw the circle around the zoomer
             using (Pen pen = new Pen(opacyWhite, 2))
@@ -935,16 +938,16 @@ namespace Greenshot.Forms
                 // Fix off by one error with the DrawRectangle
                 pixelThickness -= 1;
                 // Change the color and the pen width
-                pen.Color = opacyWhite;
-                pen.Width = 1;
-                // Vertical top to middle
-                graphics.DrawRectangle(pen, drawAtWidth, destinationRectangle.Y + padding, pixelThickness, halfHeightEnd - 2 * padding - 1);
-                // Vertical middle + 1 to bottom
-                graphics.DrawRectangle(pen, drawAtWidth, destinationRectangle.Y + halfHeightEnd + 2 * padding, pixelThickness, halfHeightEnd - 2 * padding - 1);
-                // Horizontal left to middle
-                graphics.DrawRectangle(pen, destinationRectangle.X + padding, drawAtHeight, halfWidthEnd - 2 * padding - 1, pixelThickness);
-                // Horizontal middle + 1 to right
-                graphics.DrawRectangle(pen, destinationRectangle.X + halfWidthEnd + 2 * padding, drawAtHeight, halfWidthEnd - 2 * padding - 1, pixelThickness);
+                // pen.Color = opacyWhite;
+                // pen.Width = 1;
+                // // Vertical top to middle
+                // graphics.DrawRectangle(pen, drawAtWidth, destinationRectangle.Y + padding, pixelThickness, halfHeightEnd - 2 * padding - 1);
+                // // Vertical middle + 1 to bottom
+                // graphics.DrawRectangle(pen, drawAtWidth, destinationRectangle.Y + halfHeightEnd + 2 * padding, pixelThickness, halfHeightEnd - 2 * padding - 1);
+                // // Horizontal left to middle
+                // graphics.DrawRectangle(pen, destinationRectangle.X + padding, drawAtHeight, halfWidthEnd - 2 * padding - 1, pixelThickness);
+                // // Horizontal middle + 1 to right
+                // graphics.DrawRectangle(pen, destinationRectangle.X + halfWidthEnd + 2 * padding, drawAtHeight, halfWidthEnd - 2 * padding - 1, pixelThickness);
             }
 
             attributes?.Dispose();
@@ -1021,7 +1024,14 @@ namespace Greenshot.Forms
                 //if (capture.CaptureDetails.CaptureMode == CaptureMode.Video) {
                 //	graphics.FillRectangle(RedOverlayBrush, fixedRect);
                 //} else {
-                graphics.FillRectangle(GreenOverlayBrush, fixedRect);
+                
+                // graphics.FillRectangle(GreenOverlayBrush, fixedRect);
+
+                graphics.FillRectangle(GrayOverlayBrush, new NativeRect(0, 0, _capture.ScreenBounds.Width, _captureRect.Top));
+                graphics.FillRectangle(GrayOverlayBrush, new NativeRect(0, _captureRect.Bottom, _capture.ScreenBounds.Width, _capture.ScreenBounds.Height - _captureRect.Bottom));
+                graphics.FillRectangle(GrayOverlayBrush, new NativeRect(0, _captureRect.Top, _captureRect.Left, _captureRect.Height));
+                graphics.FillRectangle(GrayOverlayBrush, new NativeRect(_captureRect.Right, _captureRect.Top, _capture.ScreenBounds.Width - _captureRect.Right, _captureRect.Height));
+
                 //}
                 graphics.DrawRectangle(OverlayPen, fixedRect);
 
@@ -1042,27 +1052,26 @@ namespace Greenshot.Forms
                     captureHeight = (_captureRect.Height + 1).ToString(CultureInfo.InvariantCulture);
                 }
 
-                using (Font rulerFont = new Font(new FontFamily("Consolas"), 8))
+                using (Font rulerFont = new Font(new FontFamily("Consolas"), 10, FontStyle.Bold))
                 {
                     Size measureWidth = TextRenderer.MeasureText(captureWidth, rulerFont);
                     Size measureHeight = TextRenderer.MeasureText(captureHeight, rulerFont);
                     int hSpace = measureWidth.Width + 3;
                     int vSpace = measureHeight.Height + 3;
-                    Brush bgBrush = new SolidBrush(Color.FromArgb(200, 217, 240, 227));
-                    Pen rulerPen = new Pen(Color.SeaGreen);
+                    Brush bgBrush = new SolidBrush(Color.FromArgb(220, Color.White));
+                    Pen rulerPen = new Pen(Color.FromArgb(120, Color.LimeGreen), 2);
 
                     // horizontal ruler
                     if (fixedRect.Width > hSpace + 3)
                     {
                         using GraphicsPath p = CreateRoundedRectangle(
                             fixedRect.X + (fixedRect.Width / 2 - hSpace / 2) + 3,
-                            fixedRect.Y - dist - 7,
+                            fixedRect.Y - dist - 12,
                             measureWidth.Width - 3,
                             measureWidth.Height,
                             3);
                         graphics.FillPath(bgBrush, p);
-                        graphics.DrawPath(rulerPen, p);
-                        graphics.DrawString(captureWidth, rulerFont, rulerPen.Brush, fixedRect.X + (fixedRect.Width / 2 - hSpace / 2) + 3, fixedRect.Y - dist - 7);
+                        graphics.DrawString(captureWidth, rulerFont, Brushes.Black, fixedRect.X + (fixedRect.Width / 2 - hSpace / 2) + 3, fixedRect.Y - dist - 12);
                         graphics.DrawLine(rulerPen, fixedRect.X, fixedRect.Y - dist, fixedRect.X + (fixedRect.Width / 2 - hSpace / 2), fixedRect.Y - dist);
                         graphics.DrawLine(rulerPen, fixedRect.X + fixedRect.Width / 2 + hSpace / 2, fixedRect.Y - dist, fixedRect.X + fixedRect.Width, fixedRect.Y - dist);
                         graphics.DrawLine(rulerPen, fixedRect.X, fixedRect.Y - dist - 3, fixedRect.X, fixedRect.Y - dist + 3);
@@ -1079,8 +1088,7 @@ namespace Greenshot.Forms
                             measureHeight.Height - 1,
                             3);
                         graphics.FillPath(bgBrush, p);
-                        graphics.DrawPath(rulerPen, p);
-                        graphics.DrawString(captureHeight, rulerFont, rulerPen.Brush, fixedRect.X - measureHeight.Width + 1, fixedRect.Y + (fixedRect.Height / 2 - vSpace / 2) + 2);
+                        graphics.DrawString(captureHeight, rulerFont, Brushes.Black, fixedRect.X - measureHeight.Width + 1, fixedRect.Y + (fixedRect.Height / 2 - vSpace / 2) + 2);
                         graphics.DrawLine(rulerPen, fixedRect.X - dist, fixedRect.Y, fixedRect.X - dist, fixedRect.Y + (fixedRect.Height / 2 - vSpace / 2));
                         graphics.DrawLine(rulerPen, fixedRect.X - dist, fixedRect.Y + fixedRect.Height / 2 + vSpace / 2, fixedRect.X - dist, fixedRect.Y + fixedRect.Height);
                         graphics.DrawLine(rulerPen, fixedRect.X - dist - 3, fixedRect.Y, fixedRect.X - dist + 3, fixedRect.Y);
@@ -1091,47 +1099,50 @@ namespace Greenshot.Forms
                     bgBrush.Dispose();
                 }
 
-                // Display size of selected rectangle
-                // Prepare the font and text.
-                using Font sizeFont = new Font(new FontFamily("Consolas"), 12);
-                // When capturing a Region we need to add 1 to the height/width for correction
-                string sizeText;
-                if (_captureMode == CaptureMode.Region || _captureMode == CaptureMode.Text)
+                if (false)
                 {
-                    // correct the GUI width to real width for the shown size
-                    sizeText = _captureRect.Width + 1 + " x " + (_captureRect.Height + 1);
-                }
-                else
-                {
-                    sizeText = _captureRect.Width + " x " + _captureRect.Height;
-                }
-
-                // Calculate the scaled font size.
-                SizeF extent = graphics.MeasureString(sizeText, sizeFont);
-                float hRatio = _captureRect.Height / (extent.Height * 2);
-                float wRatio = _captureRect.Width / (extent.Width * 2);
-                float ratio = hRatio < wRatio ? hRatio : wRatio;
-                float newSize = sizeFont.Size * ratio;
-
-                if (newSize >= 4)
-                {
-                    // Only show if 4pt or larger.
-                    if (newSize > 20)
+                    // Display size of selected rectangle
+                    // Prepare the font and text.
+                    using Font sizeFont = new Font(new FontFamily("Consolas"), 12);
+                    // When capturing a Region we need to add 1 to the height/width for correction
+                    string sizeText;
+                    if (_captureMode == CaptureMode.Region || _captureMode == CaptureMode.Text)
                     {
-                        newSize = 20;
+                        // correct the GUI width to real width for the shown size
+                        sizeText = _captureRect.Width + 1 + " x " + (_captureRect.Height + 1);
+                    }
+                    else
+                    {
+                        sizeText = _captureRect.Width + " x " + _captureRect.Height;
                     }
 
-                    // Draw the size.
-                    using Font newSizeFont = new Font(new FontFamily("Consolas"), newSize, FontStyle.Bold);
-                    PointF sizeLocation = new PointF(fixedRect.X + _captureRect.Width / 2 - extent.Width / 2, fixedRect.Y + _captureRect.Height / 2 - newSizeFont.GetHeight() / 2);
-                    graphics.DrawString(sizeText, newSizeFont, Brushes.LightSeaGreen, sizeLocation);
+                    // Calculate the scaled font size.
+                    SizeF extent = graphics.MeasureString(sizeText, sizeFont);
+                    float hRatio = _captureRect.Height / (extent.Height * 2);
+                    float wRatio = _captureRect.Width / (extent.Width * 2);
+                    float ratio = hRatio < wRatio ? hRatio : wRatio;
+                    float newSize = sizeFont.Size * ratio;
 
-                    if (_showDebugInfo && _selectedCaptureWindow != null)
+                    if (newSize >= 4)
                     {
-                        string title =
-                            $"#{_selectedCaptureWindow.Handle.ToInt64():X} - {(_selectedCaptureWindow.Text.Length > 0 ? _selectedCaptureWindow.Text : _selectedCaptureWindow.Process.ProcessName)}";
-                        PointF debugLocation = new PointF(fixedRect.X, fixedRect.Y);
-                        graphics.DrawString(title, sizeFont, Brushes.DarkOrange, debugLocation);
+                        // Only show if 4pt or larger.
+                        if (newSize > 20)
+                        {
+                            newSize = 20;
+                        }
+
+                        // Draw the size.
+                        using Font newSizeFont = new Font(new FontFamily("Consolas"), newSize, FontStyle.Bold);
+                        PointF sizeLocation = new PointF(fixedRect.X + _captureRect.Width / 2 - extent.Width / 2, fixedRect.Y + _captureRect.Height / 2 - newSizeFont.GetHeight() / 2);
+                        graphics.DrawString(sizeText, newSizeFont, Brushes.LightSeaGreen, sizeLocation);
+
+                        if (_showDebugInfo && _selectedCaptureWindow != null)
+                        {
+                            string title =
+                                $"#{_selectedCaptureWindow.Handle.ToInt64():X} - {(_selectedCaptureWindow.Text.Length > 0 ? _selectedCaptureWindow.Text : _selectedCaptureWindow.Process.ProcessName)}";
+                            PointF debugLocation = new PointF(fixedRect.X, fixedRect.Y);
+                            graphics.DrawString(title, sizeFont, Brushes.DarkOrange, debugLocation);
+                        }
                     }
                 }
             }
@@ -1139,9 +1150,9 @@ namespace Greenshot.Forms
             {
                 if (!IsTerminalServerSession)
                 {
-                    using (Pen pen = new Pen(Color.LightSeaGreen))
+                    using (Pen pen = new Pen(Color.FromArgb(70, Color.LimeGreen)))
                     {
-                        pen.DashStyle = DashStyle.Dot;
+                        pen.DashStyle = DashStyle.Dash;
                         NativeRect screenBounds = _capture.ScreenBounds;
                         graphics.DrawLine(pen, _cursorPos.X, screenBounds.Y, _cursorPos.X, screenBounds.Height);
                         graphics.DrawLine(pen, screenBounds.X, _cursorPos.Y, screenBounds.Width, _cursorPos.Y);
