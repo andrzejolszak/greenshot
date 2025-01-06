@@ -191,7 +191,7 @@ namespace Greenshot.Base.Core
                 var scaledIconSize = DpiCalculator.ScaleWithDpi(CoreConfig.IconSize, screenDpi);
                 menu.SuspendLayout();
                 var fontSize = DpiCalculator.ScaleWithDpi(12f, screenDpi);
-                menu.Font = new Font(FontFamily.GenericSansSerif, fontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+                menu.Font = new Font(new FontFamily("Consolas"), fontSize, FontStyle.Regular, GraphicsUnit.Pixel);
                 menu.ImageScalingSize = scaledIconSize;
                 menu.ResumeLayout();
             };

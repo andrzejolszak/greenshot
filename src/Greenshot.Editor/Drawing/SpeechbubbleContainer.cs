@@ -76,14 +76,14 @@ namespace Greenshot.Editor.Drawing
         /// </summary>
         protected override void InitializeFields()
         {
-            AddField(GetType(), FieldType.LINE_THICKNESS, 2);
-            AddField(GetType(), FieldType.LINE_COLOR, Color.Blue);
+            AddField(GetType(), FieldType.LINE_THICKNESS, 0);
+            AddField(GetType(), FieldType.LINE_COLOR, Color.Black);
             AddField(GetType(), FieldType.SHADOW, false);
             AddField(GetType(), FieldType.FONT_ITALIC, false);
-            AddField(GetType(), FieldType.FONT_BOLD, true);
+            AddField(GetType(), FieldType.FONT_BOLD, false);
             AddField(GetType(), FieldType.FILL_COLOR, Color.White);
-            AddField(GetType(), FieldType.FONT_FAMILY, FontFamily.GenericSansSerif.Name);
-            AddField(GetType(), FieldType.FONT_SIZE, 20f);
+            AddField(GetType(), FieldType.FONT_FAMILY, new FontFamily("Consolas").Name);
+            AddField(GetType(), FieldType.FONT_SIZE, 12f);
             AddField(GetType(), FieldType.TEXT_HORIZONTAL_ALIGNMENT, StringAlignment.Center);
             AddField(GetType(), FieldType.TEXT_VERTICAL_ALIGNMENT, StringAlignment.Center);
         }

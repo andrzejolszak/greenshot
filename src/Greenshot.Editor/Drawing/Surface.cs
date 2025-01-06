@@ -2354,7 +2354,7 @@ namespace Greenshot.Editor.Drawing
                 {
                     DeselectAllElements();
                     ITextContainer textContainer = AddTextContainer(text, pasteLocation.X, pasteLocation.Y,
-                        FontFamily.GenericSansSerif, 12f, false, false, false, 2, Color.Black, Color.Transparent);
+                        new FontFamily("Consolas"), 12f, false, false, false, 2, Color.Black, Color.Transparent);
                     SelectElement(textContainer);
                 }
             }

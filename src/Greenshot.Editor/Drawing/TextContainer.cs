@@ -92,14 +92,14 @@ namespace Greenshot.Editor.Drawing
 
         protected override void InitializeFields()
         {
-            AddField(GetType(), FieldType.LINE_THICKNESS, 2);
+            AddField(GetType(), FieldType.LINE_THICKNESS, 0);
             AddField(GetType(), FieldType.LINE_COLOR, Color.Red);
-            AddField(GetType(), FieldType.SHADOW, true);
+            AddField(GetType(), FieldType.SHADOW, false);
             AddField(GetType(), FieldType.FONT_ITALIC, false);
             AddField(GetType(), FieldType.FONT_BOLD, false);
             AddField(GetType(), FieldType.FILL_COLOR, Color.Transparent);
-            AddField(GetType(), FieldType.FONT_FAMILY, FontFamily.GenericSansSerif.Name);
-            AddField(GetType(), FieldType.FONT_SIZE, 11f);
+            AddField(GetType(), FieldType.FONT_FAMILY, new FontFamily("Consolas"));
+            AddField(GetType(), FieldType.FONT_SIZE, 12f);
             AddField(GetType(), FieldType.TEXT_HORIZONTAL_ALIGNMENT, StringAlignment.Center);
             AddField(GetType(), FieldType.TEXT_VERTICAL_ALIGNMENT, StringAlignment.Center);
         }
@@ -316,7 +316,7 @@ namespace Greenshot.Editor.Drawing
                 BorderStyle = BorderStyle.None,
                 Visible = false,
                 Margin = new Padding(0),
-                Font = new Font(FontFamily.GenericSansSerif, 1) // just need something non-default here
+                Font = new Font(new FontFamily("Consolas"), 1) // just need something non-default here
             };
 
             _textBox.DataBindings.Add("Text", this, "Text", false, DataSourceUpdateMode.OnPropertyChanged);
@@ -445,7 +445,7 @@ namespace Greenshot.Editor.Drawing
                 // Problem, try again with the default
                 try
                 {
-                    fontFamily = FontFamily.GenericSansSerif.Name;
+                    fontFamily = new FontFamily("Consolas").Name;
                     SetFieldValue(FieldType.FONT_FAMILY, fontFamily);
                     var newFont = CreateFont(fontFamily, fontBold, fontItalic, fontSize);
                     _font?.Dispose();

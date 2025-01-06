@@ -206,7 +206,7 @@ namespace Greenshot.Editor.Drawing
             }
 
             float fontSize = Math.Min(Math.Abs(Width), Math.Abs(Height)) / 1.4f;
-            using FontFamily fam = new FontFamily(FontFamily.GenericSansSerif.Name);
+            using FontFamily fam = new FontFamily(new FontFamily("Consolas").Name);
             using Font font = new Font(fam, fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
             TextContainer.DrawText(graphics, rect, 0, lineColor, false, _stringFormat, text, font);
         }

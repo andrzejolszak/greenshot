@@ -633,7 +633,7 @@ namespace Greenshot.Forms
                 int textForWidth = Math.Max(Math.Abs(_mX - _cursorPos.X), Math.Abs(_mX - lastPos.X));
                 int textForHeight = Math.Max(Math.Abs(_mY - _cursorPos.Y), Math.Abs(_mY - lastPos.Y));
 
-                using (Font rulerFont = new Font(FontFamily.GenericSansSerif, 8))
+                using (Font rulerFont = new Font(new FontFamily("Consolas"), 8))
                 {
                     Size measureWidth = TextRenderer.MeasureText(textForWidth.ToString(CultureInfo.InvariantCulture), rulerFont);
                     x1 -= measureWidth.Width + 15;
@@ -1042,7 +1042,7 @@ namespace Greenshot.Forms
                     captureHeight = (_captureRect.Height + 1).ToString(CultureInfo.InvariantCulture);
                 }
 
-                using (Font rulerFont = new Font(FontFamily.GenericSansSerif, 8))
+                using (Font rulerFont = new Font(new FontFamily("Consolas"), 8))
                 {
                     Size measureWidth = TextRenderer.MeasureText(captureWidth, rulerFont);
                     Size measureHeight = TextRenderer.MeasureText(captureHeight, rulerFont);
@@ -1093,7 +1093,7 @@ namespace Greenshot.Forms
 
                 // Display size of selected rectangle
                 // Prepare the font and text.
-                using Font sizeFont = new Font(FontFamily.GenericSansSerif, 12);
+                using Font sizeFont = new Font(new FontFamily("Consolas"), 12);
                 // When capturing a Region we need to add 1 to the height/width for correction
                 string sizeText;
                 if (_captureMode == CaptureMode.Region || _captureMode == CaptureMode.Text)
@@ -1122,7 +1122,7 @@ namespace Greenshot.Forms
                     }
 
                     // Draw the size.
-                    using Font newSizeFont = new Font(FontFamily.GenericSansSerif, newSize, FontStyle.Bold);
+                    using Font newSizeFont = new Font(new FontFamily("Consolas"), newSize, FontStyle.Bold);
                     PointF sizeLocation = new PointF(fixedRect.X + _captureRect.Width / 2 - extent.Width / 2, fixedRect.Y + _captureRect.Height / 2 - newSizeFont.GetHeight() / 2);
                     graphics.DrawString(sizeText, newSizeFont, Brushes.LightSeaGreen, sizeLocation);
 
@@ -1148,7 +1148,7 @@ namespace Greenshot.Forms
                     }
 
                     string xy = _cursorPos.X + " x " + _cursorPos.Y;
-                    using Font f = new Font(FontFamily.GenericSansSerif, 8);
+                    using Font f = new Font(new FontFamily("Consolas"), 8);
                     Size xySize = TextRenderer.MeasureText(xy, f);
                     using GraphicsPath gp = CreateRoundedRectangle(_cursorPos.X + 5, _cursorPos.Y + 5, xySize.Width - 3, xySize.Height, 3);
                     using (Brush bgBrush = new SolidBrush(Color.FromArgb(200, 217, 240, 227)))
