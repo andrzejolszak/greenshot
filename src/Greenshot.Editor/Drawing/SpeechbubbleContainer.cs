@@ -81,7 +81,7 @@ namespace Greenshot.Editor.Drawing
             AddField(GetType(), FieldType.SHADOW, false);
             AddField(GetType(), FieldType.FONT_ITALIC, false);
             AddField(GetType(), FieldType.FONT_BOLD, false);
-            AddField(GetType(), FieldType.FILL_COLOR, Color.White);
+            AddField(GetType(), FieldType.FILL_COLOR, Color.LightGray);
             AddField(GetType(), FieldType.FONT_FAMILY, new FontFamily("Consolas").Name);
             AddField(GetType(), FieldType.FONT_SIZE, 12f);
             AddField(GetType(), FieldType.TEXT_HORIZONTAL_ALIGNMENT, StringAlignment.Center);

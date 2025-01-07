@@ -203,7 +203,7 @@ namespace Greenshot.Base.Interfaces
         void RemoveElement(IDrawableContainer elementToRemove, bool makeUndoable = true, bool invalidate = true, bool generateEvents = true);
 
         void SendMessageEvent(object source, SurfaceMessageTyp messageType, string message);
-        void ApplyBitmapEffect(IEffect effect);
+        void ApplyBitmapEffect(IEffect effect, bool useOriginal);
         void RemoveCursor();
         bool HasCursor { get; }
 

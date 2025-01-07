@@ -79,7 +79,6 @@ namespace Greenshot.Editor.Forms {
 			this.tornEdgesToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.grayscaleToolStripMenuItem = new GreenshotToolStripMenuItem();
 			this.invertToolStripMenuItem = new GreenshotToolStripMenuItem();
-			this.btnResize = new GreenshotToolStripButton();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.btnCrop = new GreenshotToolStripButton();
 			this.rotateCwToolstripButton = new GreenshotToolStripButton();
@@ -230,7 +229,7 @@ namespace Greenshot.Editor.Forms {
 			this.panel1.Name = "panel1";
             this.panel1.AutoSize = true;
 			this.panel1.TabIndex = 2;
-            this.panel1.BackColor = Color.Magenta;
+            // this.panel1.BackColor = Color.Magenta;
 
             // 
             // toolsToolStrip
@@ -258,8 +257,7 @@ namespace Greenshot.Editor.Forms {
 									this.toolStripSeparator13,
 									this.btnCrop,
 									this.rotateCwToolstripButton,
-									this.rotateCcwToolstripButton,
-									this.btnResize});
+									this.rotateCcwToolstripButton});
 			this.toolsToolStrip.Name = "toolsToolStrip";
 			this.toolsToolStrip.Stretch = true;
 			this.toolsToolStrip.TabIndex = 0;
@@ -428,15 +426,6 @@ namespace Greenshot.Editor.Forms {
 			this.invertToolStripMenuItem.LanguageKey = "editor_invert";
 			this.invertToolStripMenuItem.Name = "invertToolStripMenuItem";
 			this.invertToolStripMenuItem.Click += new System.EventHandler(this.InvertToolStripMenuItemClick);
-			// 
-			// btnResize
-			// 
-			this.btnResize.Name = "btnResize";
-			this.btnResize.Click += new System.EventHandler(this.BtnResizeClick);
-			this.btnResize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btnResize.Image = ((System.Drawing.Image)(resources.GetObject("btnResize.Image")));
-			this.btnResize.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnResize.LanguageKey = "editor_resize";
 			// 
 			// toolStripSeparator13
 			// 
@@ -1721,7 +1710,6 @@ namespace Greenshot.Editor.Forms {
 		private GreenshotToolStripMenuItem alignTopToolStripMenuItem;
 		private BindableToolStripDropDownButton textVerticalAlignmentButton;
 		private GreenshotToolStripMenuItem invertToolStripMenuItem;
-		private GreenshotToolStripButton btnResize;
 		private GreenshotToolStripMenuItem grayscaleToolStripMenuItem;
 		private GreenshotToolStripButton rotateCcwToolstripButton;
 		private GreenshotToolStripButton rotateCwToolstripButton;

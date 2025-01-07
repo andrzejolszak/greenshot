@@ -799,7 +799,7 @@ namespace Greenshot.Forms
             NativeRect screenBounds = DisplayInfo.GetBounds(MousePosition);
             // convert to be relative to top left corner of all screen bounds
             screenBounds = screenBounds.MoveTo(WindowCapture.GetLocationRelativeToScreenBounds(screenBounds.Location));
-            int relativeZoomSize = Math.Min(screenBounds.Width, screenBounds.Height) / 5;
+            int relativeZoomSize = Math.Min(screenBounds.Width, screenBounds.Height) / 10;
             // Make sure the final size is a plural of 4, this makes it look better
             relativeZoomSize -= relativeZoomSize % 4;
             var zoomSize = new NativeSize(relativeZoomSize, relativeZoomSize);
@@ -892,7 +892,7 @@ namespace Greenshot.Forms
                 }
             }
 
-            int alpha = (int) (160 * Conf.ZoomerOpacity);
+            int alpha = (int) (100 * Conf.ZoomerOpacity);
             Color opacyWhite = Color.FromArgb(alpha, 255, 255, 255);
             Color opacyBlack = Color.FromArgb(alpha, Color.Magenta);
 
@@ -1179,8 +1179,8 @@ namespace Greenshot.Forms
             // Zoom
             if (_zoomAnimator != null && (IsAnimating(_zoomAnimator) || _captureMode != CaptureMode.Window))
             {
-                const int zoomSourceWidth = 25;
-                const int zoomSourceHeight = 25;
+                const int zoomSourceWidth = 15;
+                const int zoomSourceHeight = 15;
 
                 var sourceRectangle = new NativeRect(_cursorPos.X - zoomSourceWidth / 2, _cursorPos.Y - zoomSourceHeight / 2, zoomSourceWidth, zoomSourceHeight);
 

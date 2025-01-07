@@ -86,6 +86,8 @@ namespace Greenshot.Editor.Forms
 
         // Used for tracking the mouse scroll wheel changes
         private DateTime _zoomStartTime = DateTime.Now;
+        private Size _originalImageSize;
+        private float _zoomFactor;
 
         /// <summary>
         /// All provided zoom values (in percents) in ascending order.
@@ -138,6 +140,11 @@ namespace Greenshot.Editor.Forms
             Initialize(surface, outputMade);
         }
 
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            //empty implementation
+        }
+
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
@@ -166,6 +173,11 @@ namespace Greenshot.Editor.Forms
             //
             ManualLanguageApply = true;
             InitializeComponent();
+
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            this.BackColor = Color.Transparent;
+            this.TransparencyKey = Color.Transparent;
+
             // Make sure we change the icon size depending on the scaling
             Load += delegate
             {
@@ -284,6 +296,8 @@ namespace Greenshot.Editor.Forms
                 this.ClientSize = _surface.ClientSize;
                 panel1.ClientSize = _surface.ClientSize;
                 this.PerformLayout();
+                this._originalImageSize = _surface.Image.Size;
+                this._zoomFactor = 1f;
             }
 
             Activate();
@@ -1115,23 +1129,20 @@ namespace Greenshot.Editor.Forms
         /// <param name="e">MouseEventArgs</param>
         private void PanelMouseWheel(object sender, MouseEventArgs e)
         {
-            if (System.Windows.Forms.Control.ModifierKeys.Equals(Keys.Control))
+            if (ModifierKeys.Equals(Keys.Control))
             {
-                if (_zoomStartTime.AddMilliseconds(100) < DateTime.Now) //waiting for next zoom step 100 ms
-                {
-                    _zoomStartTime = DateTime.Now;
-                    if (e.Delta > 0)
-                    {
-                        ZoomInMenuItemClick(sender, e);
-                    }
-                    else if (e.Delta < 0)
-                    {
-                        ZoomOutMenuItemClick(sender, e);
-                    }
-                }
+                float alpha = e.Delta > 0 ? 1f : 0.3f;
+                var alphaEffect = new AlphaEffect(alpha);
+                _surface.ApplyBitmapEffect(alphaEffect, true);
+                UpdateUndoRedoSurfaceDependencies();
             }
-
-            panel1.Focus();
+            else
+            {
+                _zoomFactor = _zoomFactor + (e.Delta > 0 ? 0.1f : -0.1f); 
+                var resizeEffect = new ResizeEffect((int)Math.Round(_originalImageSize.Width * _zoomFactor), (int)Math.Round(_originalImageSize.Height * _zoomFactor), true);
+                _surface.ApplyBitmapEffect(resizeEffect, true);
+                UpdateUndoRedoSurfaceDependencies();
+            }
         }
 
         protected override bool ProcessKeyPreview(ref Message msg)
@@ -1657,7 +1668,7 @@ namespace Greenshot.Editor.Forms
 
         private void AddBorderToolStripMenuItemClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new BorderEffect());
+            _surface.ApplyBitmapEffect(new BorderEffect(), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 
@@ -1668,7 +1679,7 @@ namespace Greenshot.Editor.Forms
         /// <param name="e"></param>
         private void EnlargeCanvasToolStripMenuItemClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new ResizeCanvasEffect(25, 25, 25, 25));
+            _surface.ApplyBitmapEffect(new ResizeCanvasEffect(25, 25, 25, 25), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 
@@ -1716,24 +1727,7 @@ namespace Greenshot.Editor.Forms
 
             if (apply)
             {
-                _surface.ApplyBitmapEffect(dropShadowEffect);
-                UpdateUndoRedoSurfaceDependencies();
-            }
-        }
-
-
-        /// <summary>
-        /// Open the resize settings from, and resize if ok was pressed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnResizeClick(object sender, EventArgs e)
-        {
-            var resizeEffect = new ResizeEffect(_surface.Image.Width, _surface.Image.Height, true);
-            var result = new ResizeSettingsForm(resizeEffect).ShowDialog(this);
-            if (result == DialogResult.OK)
-            {
-                _surface.ApplyBitmapEffect(resizeEffect);
+                _surface.ApplyBitmapEffect(dropShadowEffect, false);
                 UpdateUndoRedoSurfaceDependencies();
             }
         }
@@ -1762,14 +1756,14 @@ namespace Greenshot.Editor.Forms
 
             if (apply)
             {
-                _surface.ApplyBitmapEffect(tornEdgeEffect);
+                _surface.ApplyBitmapEffect(tornEdgeEffect, false);
                 UpdateUndoRedoSurfaceDependencies();
             }
         }
 
         private void GrayscaleToolStripMenuItemClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new GrayscaleEffect());
+            _surface.ApplyBitmapEffect(new GrayscaleEffect(), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 
@@ -1781,19 +1775,19 @@ namespace Greenshot.Editor.Forms
 
         private void RotateCwToolstripButtonClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new RotateEffect(90));
+            _surface.ApplyBitmapEffect(new RotateEffect(90), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 
         private void RotateCcwToolstripButtonClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new RotateEffect(270));
+            _surface.ApplyBitmapEffect(new RotateEffect(270), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 
         private void InvertToolStripMenuItemClick(object sender, EventArgs e)
         {
-            _surface.ApplyBitmapEffect(new InvertEffect());
+            _surface.ApplyBitmapEffect(new InvertEffect(), false);
             UpdateUndoRedoSurfaceDependencies();
         }
 

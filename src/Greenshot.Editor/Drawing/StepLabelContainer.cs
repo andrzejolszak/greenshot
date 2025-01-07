@@ -145,8 +145,8 @@ namespace Greenshot.Editor.Drawing
         /// </summary>
         protected override void InitializeFields()
         {
-            AddField(GetType(), FieldType.FILL_COLOR, Color.DarkRed);
-            AddField(GetType(), FieldType.LINE_COLOR, Color.White);
+            AddField(GetType(), FieldType.FILL_COLOR, Color.Salmon);
+            AddField(GetType(), FieldType.LINE_COLOR, Color.Black);
             AddField(GetType(), FieldType.FLAGS, FieldFlag.COUNTER);
         }
 
@@ -198,11 +198,11 @@ namespace Greenshot.Editor.Drawing
             Color lineColor = GetFieldValueAsColor(FieldType.LINE_COLOR);
             if (_drawAsRectangle)
             {
-                RectangleContainer.DrawRectangle(rect, graphics, rm, 0, Color.Transparent, fillColor, false);
+                RectangleContainer.DrawRectangle(rect, graphics, rm, 0, fillColor, fillColor, false);
             }
             else
             {
-                EllipseContainer.DrawEllipse(rect, graphics, rm, 0, Color.Transparent, fillColor, false);
+                EllipseContainer.DrawEllipse(rect, graphics, rm, 0, fillColor, fillColor, false);
             }
 
             float fontSize = Math.Min(Math.Abs(Width), Math.Abs(Height)) / 1.4f;

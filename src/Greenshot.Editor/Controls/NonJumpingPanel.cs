@@ -29,11 +29,22 @@ namespace Greenshot.Editor.Controls
     /// </summary>
     public class NonJumpingPanel : Panel
     {
+        public NonJumpingPanel()
+        {
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            this.BackColor = Color.Transparent;
+        }
+
         protected override Point ScrollToControl(Control activeControl)
         {
             // Returning the current location prevents the panel from
             // scrolling to the active control when the panel loses and regains focus
             return DisplayRectangle.Location;
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            //empty implementation
         }
 
         /// <summary>

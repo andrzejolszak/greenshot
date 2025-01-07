@@ -377,6 +377,7 @@ namespace Greenshot.Editor.Drawing
         /// The image is the actual captured image, needed with serialization
         /// </summary>
         private Image _image;
+        private Image _originalImage;
 
         public Image Image
         {
@@ -567,6 +568,11 @@ namespace Greenshot.Editor.Drawing
             if (_image != null && dispose)
             {
                 _image.Dispose();
+            }
+
+            if (_originalImage is null)
+            {
+                _originalImage = newImage;
             }
 
             // Set new values
@@ -1093,39 +1099,29 @@ namespace Greenshot.Editor.Drawing
         /// Apply a bitmap effect to the surface
         /// </summary>
         /// <param name="effect"></param>
-        public void ApplyBitmapEffect(IEffect effect)
+        public void ApplyBitmapEffect(IEffect effect, bool useOriginal)
         {
-            BackgroundForm backgroundForm = new BackgroundForm("Effect", "Please wait");
-            backgroundForm.Show();
-            Application.DoEvents();
-            try
+            Image target = useOriginal && _elements.Count == 0 ? _originalImage : Image;
+            var imageRectangle = new NativeRect(NativePoint.Empty, target.Size);
+            Matrix matrix = new Matrix();
+            Image newImage = ImageHelper.ApplyEffect(target, effect, matrix);
+            if (newImage != null)
             {
-                var imageRectangle = new NativeRect(NativePoint.Empty, Image.Size);
-                Matrix matrix = new Matrix();
-                Image newImage = ImageHelper.ApplyEffect(Image, effect, matrix);
-                if (newImage != null)
+                // Make sure the elements move according to the offset the effect made the bitmap move
+                _elements.Transform(matrix);
+                // Make undoable
+                MakeUndoable(new SurfaceBackgroundChangeMemento(this, matrix), false);
+                SetImage(newImage, false);
+                Invalidate();
+                if (_surfaceSizeChanged != null && !imageRectangle.Equals(new NativeRect(NativePoint.Empty, newImage.Size)))
                 {
-                    // Make sure the elements move according to the offset the effect made the bitmap move
-                    _elements.Transform(matrix);
-                    // Make undoable
-                    MakeUndoable(new SurfaceBackgroundChangeMemento(this, matrix), false);
-                    SetImage(newImage, false);
-                    Invalidate();
-                    if (_surfaceSizeChanged != null && !imageRectangle.Equals(new NativeRect(NativePoint.Empty, newImage.Size)))
-                    {
-                        _surfaceSizeChanged(this, null);
-                    }
-                }
-                else
-                {
-                    // clean up matrix, as it hasn't been used in the undo stack.
-                    matrix.Dispose();
+                    _surfaceSizeChanged(this, null);
                 }
             }
-            finally
+            else
             {
-                // Always close the background form
-                backgroundForm.CloseDialog();
+                // clean up matrix, as it hasn't been used in the undo stack.
+                matrix.Dispose();
             }
         }
 

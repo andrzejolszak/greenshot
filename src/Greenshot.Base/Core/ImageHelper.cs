@@ -1508,7 +1508,32 @@ namespace Greenshot.Base.Core
 
             return newImage;
         }
-        
+
+        /// <summary>
+        /// Scale the bitmap, keeping aspect ratio, but the canvas will always have the specified size.
+        /// </summary>
+        /// <param name="sourceImage">Image to scale</param>
+        /// <param name="maintainAspectRatio">true to maintain the aspect ratio</param>
+        /// <param name="canvasUseNewSize">Makes the image maintain aspect ratio, but the canvas get's the specified size</param>
+        /// <param name="backgroundColor">The color to fill with, or Color.Empty to take the default depending on the pixel format</param>
+        /// <param name="newWidth">new width</param>
+        /// <param name="newHeight">new height</param>
+        /// <param name="matrix"></param>
+        /// <returns>a new bitmap with the specified size, the source-Image scaled to fit with aspect ratio locked</returns>
+        public static Image AlphaAdjustImage(Image sourceImage, float alpha = 0.8f)
+        {
+            Bitmap clone = (Bitmap)Clone(sourceImage);
+            float[][] matrixItems ={
+                new float[] {1, 0, 0, 0, 0},
+                new float[] {0, 1, 0, 0, 0},
+                new float[] {0, 0, 1, 0, 0},
+                new float[] {0, 0, 0, alpha, 0},
+                new float[] {0, 0, 0, 0, 1}};
+            ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+            ApplyColorMatrix(clone, colorMatrix);
+            return clone;
+        }
+
         /// <summary>
         /// Rotate the image
         /// </summary>
